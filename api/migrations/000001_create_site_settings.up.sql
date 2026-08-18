@@ -1,0 +1,37 @@
+CREATE TABLE site_settings (
+  `key` VARCHAR(100) PRIMARY KEY,
+  `value` TEXT NULL,
+  `value_type` ENUM('string','int','bool','json') NOT NULL DEFAULT 'string',
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  updated_by BIGINT UNSIGNED NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO site_settings (`key`, `value`, `value_type`) VALUES
+  ('site_title', 'Digital Memorial', 'string'),
+  ('logo_path', '', 'string'),
+  ('favicon_path', '', 'string'),
+  ('org_name', '', 'string'),
+  ('org_address', '', 'string'),
+  ('org_phone', '', 'string'),
+  ('org_email', '', 'string'),
+  ('login_route', '/login', 'string'),
+  ('default_timezone', 'Asia/Kuala_Lumpur', 'string'),
+  ('default_date_format', 'YYYY-MM-DD', 'string'),
+  ('default_theme', 'light', 'string'),
+  ('session_timeout_minutes', '120', 'int'),
+  ('password_min_length', '8', 'int'),
+  ('password_complexity', 'medium', 'string'),
+  ('password_expiry_days', '0', 'int'),
+  ('lockout_threshold', '5', 'int'),
+  ('lockout_duration_minutes', '15', 'int'),
+  ('upload_max_size_mb', '5', 'int'),
+  ('upload_allowed_types', 'image/png,image/jpeg,image/webp,image/svg+xml', 'string'),
+  ('pagination_default', '20', 'int'),
+  ('smtp_host', '', 'string'),
+  ('smtp_port', '587', 'int'),
+  ('smtp_user', '', 'string'),
+  ('smtp_pass', '', 'string'),
+  ('smtp_from', '', 'string'),
+  ('maintenance_mode', 'false', 'bool'),
+  ('audit_log_retention_days', '365', 'int'),
+  ('setup_completed', 'false', 'bool');
