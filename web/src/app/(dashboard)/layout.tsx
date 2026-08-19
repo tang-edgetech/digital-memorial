@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <ThemeProvider initialMode={user.themePreference}>
-      <AppShell userLabel={`${user.fullName} (${user.role})`}>{children}</AppShell>
+      <AppShell user={user}>{children}</AppShell>
       <SessionExpiredModal />
     </ThemeProvider>
   );

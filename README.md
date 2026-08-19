@@ -31,7 +31,7 @@ Built phase by phase; each phase should be usable/demoable on its own before mov
 - Shared interaction patterns to reuse everywhere from here on: AJAX-driven actions, Toast notifications, confirmation-before-execute prompts, icon buttons with hover tooltips.
 - Audit log infrastructure (table + logging hook/middleware) — built early so every later phase logs through it from day one.
 
-### Phase 2 — User & Access Management *(current focus)*
+### Phase 2 — User & Access Management *(done)*
 - User Listing page (Super Admin and Admin each get one; filter, sort, bulk actions, quick actions).
 - Create/Edit user as full pages: `/users/create`, `/users/:id/edit`.
 - Roles: Super Admin (hidden from Admin/Agent views), Admin (one flagged as Owner — only the Owner can remove other Admins), Agent.
@@ -107,8 +107,18 @@ Phase 1 (Foundation & Setup) is implemented and has been verified end-to-end (se
 - **No `docker-compose.yml`** for local MySQL — local dev uses XAMPP's MySQL directly per the Deployment Targets above, so a containerized DB would just be redundant.
 - Frontend/backend run on separate ports (`:3000` / `:8080`) sharing cookies via the browser's port-agnostic cookie scoping (both are `localhost`). In production, reverse-proxying both under one domain (e.g. `/api/*` → Go, everything else → Next.js) is simpler and avoids relying on that behavior — see Deployment Targets.
 
+## Phase 2 Implementation Notes
+
+Phase 2 (User & Access Management) is implemented; the backend rules (owner assignment/transfer, admin-on-admin protection, self-protection, super_admin row hiding, live permission-matrix updates, bulk actions, audit logging) were all verified end-to-end via direct API testing. The frontend builds/lints/typechecks cleanly and the pages/routes are wired up, but the UI itself (forms, table filtering/sorting, confirm dialogs) has **not** been manually clicked through in a browser — worth a pass before considering this fully done from a UX standpoint.
+
+- Editing your own account through `/users/:id/edit` is blocked entirely (not just role changes) — there's no "my profile" self-service page yet; that'd be a separate future feature if needed.
+- The `permissions` module (managing the matrix itself) is intentionally hardcoded to Super Admin/Owner and never appears as a row in the matrix — avoids a self-referential escalation path.
+- `GET /api/settings` stays open to any authenticated role (Agents' idle-timeout logic depends on it); only `PUT /api/settings` is permission-gated.
+
 ## Status
 
 **Phase 1 (Foundation & Setup): done.** Next.js + Go scaffolding, `/setup` wizard, site settings (with the ~27 suggested fields seeded), JWT auth with sliding 2-hour idle-timeout (server-enforced + client-side idle modal), CSRF protection, per-IP rate limiting on login/setup, audit logging, dashboard shell (collapsible sidebar, per-user light/dark theme), and the shared Toast/Confirm/IconButtonWithTooltip patterns are all in place and build/lint/typecheck cleanly.
 
-Phase 2 (User & Access Management) is scoped and ready to start next. Phases 3–4 remain to be detailed as we approach them.
+**Phase 2 (User & Access Management): done** (backend verified end-to-end; frontend UI not yet manually browser-tested — see notes above). User listing with filter/sort/bulk-actions/quick-actions, full-page create/edit, Owner/Admin/Agent role rules, and the roles × permissions matrix are all in place.
+
+Phases 3–4 remain to be detailed as we approach them.

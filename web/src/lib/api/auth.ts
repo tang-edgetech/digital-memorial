@@ -1,11 +1,16 @@
 import { apiFetch } from "./client";
 
+export type UserRole = "super_admin" | "admin" | "agent";
+
 export interface CurrentUser {
   id: number;
   email: string;
   fullName: string;
-  role: "super_admin" | "admin" | "agent";
+  role: UserRole;
+  isOwner: boolean;
+  isActive: boolean;
   themePreference: "light" | "dark";
+  permissions: Record<string, Record<string, boolean>>;
 }
 
 export function login(email: string, password: string) {

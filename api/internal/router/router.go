@@ -47,7 +47,23 @@ func New() *gin.Engine {
 	{
 		protected.GET("/auth/me", handlers.Me)
 		protected.GET("/settings", handlers.GetSettings)
-		protected.PUT("/settings", middleware.RequireRole("super_admin", "admin"), handlers.UpdateSettingsHandler)
+		protected.PUT("/settings", middleware.RequirePermission("settings", "edit"), handlers.UpdateSettingsHandler)
+
+		usersGroup := protected.Group("/users")
+		{
+			usersGroup.GET("", middleware.RequirePermission("users", "view"), handlers.ListUsers)
+			usersGroup.POST("", middleware.RequirePermission("users", "create"), handlers.CreateUser)
+			usersGroup.GET("/:id", middleware.RequirePermission("users", "view"), handlers.GetUser)
+			usersGroup.PUT("/:id", middleware.RequirePermission("users", "edit"), handlers.UpdateUser)
+			usersGroup.PATCH("/:id/status", middleware.RequirePermission("users", "enable_disable"), handlers.SetUserStatus)
+			usersGroup.DELETE("/:id", middleware.RequirePermission("users", "delete"), handlers.DeleteUser)
+			usersGroup.PUT("/:id/owner", middleware.RequireOwnerOrSuperAdmin(), handlers.TransferOwnership)
+			usersGroup.POST("/bulk-status", middleware.RequirePermission("users", "enable_disable"), handlers.BulkSetStatus)
+			usersGroup.POST("/bulk-delete", middleware.RequirePermission("users", "delete"), handlers.BulkDelete)
+		}
+
+		protected.GET("/permissions", middleware.RequireOwnerOrSuperAdmin(), handlers.GetPermissions)
+		protected.PUT("/permissions", middleware.RequireOwnerOrSuperAdmin(), handlers.UpdatePermissions)
 	}
 
 	return r

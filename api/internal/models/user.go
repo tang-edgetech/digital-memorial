@@ -16,6 +16,7 @@ type User struct {
 	PasswordHash     string     `gorm:"size:255" json:"-"`
 	FullName         string     `gorm:"size:255" json:"fullName"`
 	Role             Role       `gorm:"type:enum('super_admin','admin','agent');default:agent" json:"role"`
+	IsOwner          bool       `gorm:"column:is_owner;default:false" json:"isOwner"`
 	IsActive         bool       `gorm:"default:true" json:"isActive"`
 	ThemePreference  string     `gorm:"column:theme_preference;type:enum('light','dark');default:light" json:"themePreference"`
 	FailedLoginCount uint       `gorm:"column:failed_login_count;default:0" json:"-"`

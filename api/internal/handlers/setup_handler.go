@@ -105,6 +105,7 @@ func SetupDB(c *gin.Context) {
 	}
 	db.Set(gdb)
 	services.RefreshSetupCompletedFromDB()
+	services.RefreshPermissionsFromDB()
 
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }

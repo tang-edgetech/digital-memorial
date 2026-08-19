@@ -127,6 +127,9 @@ func toUserResponse(u *models.User) gin.H {
 		"email":           u.Email,
 		"fullName":        u.FullName,
 		"role":            u.Role,
+		"isOwner":         u.IsOwner,
+		"isActive":        u.IsActive,
 		"themePreference": u.ThemePreference,
+		"permissions":     services.EffectivePermissions(string(u.Role)),
 	}
 }

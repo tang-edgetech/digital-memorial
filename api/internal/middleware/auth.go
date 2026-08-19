@@ -66,6 +66,48 @@ func RequireRole(roles ...string) gin.HandlerFunc {
 	}
 }
 
+// RequirePermission checks the caller's role against the cached permission
+// matrix for module/action. This is the first line of defense only — rules
+// that need the target row loaded (admin-on-admin protection, self-
+// protection, super_admin-row hiding) live in the user service functions,
+// not here.
+func RequirePermission(module, action string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		role, _ := c.Get("userRole")
+		roleStr, _ := role.(string)
+		if !services.HasPermission(roleStr, module, action) {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden", "code": "forbidden"})
+			return
+		}
+		c.Next()
+	}
+}
+
+// RequireOwnerOrSuperAdmin gates actions that must never be matrix-driven
+// (managing the permission matrix itself, transferring ownership) to avoid
+// self-referential escalation.
+func RequireOwnerOrSuperAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		role, _ := c.Get("userRole")
+		if role == "super_admin" {
+			c.Next()
+			return
+		}
+		userID, _ := c.Get("userID")
+		id, ok := userID.(uint)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden", "code": "forbidden"})
+			return
+		}
+		user, err := services.GetUserByID(id)
+		if err != nil || !user.IsOwner {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden", "code": "forbidden"})
+			return
+		}
+		c.Next()
+	}
+}
+
 func SetSessionCookie(c *gin.Context, token string, expiresAt time.Time) {
 	maxAge := int(time.Until(expiresAt).Seconds())
 	c.SetCookie(SessionCookieName, token, maxAge, "/", "", isSecureRequest(c), true)

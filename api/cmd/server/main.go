@@ -22,6 +22,7 @@ func main() {
 		} else {
 			db.Set(gdb)
 			services.RefreshSetupCompletedFromDB()
+			services.RefreshPermissionsFromDB()
 		}
 	}
 
