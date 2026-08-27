@@ -78,15 +78,7 @@ export default function EditUserPage() {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <Spin />
-      </div>
-    );
-  }
-
-  if (!target) {
+  if (!loading && !target) {
     return (
       <Card>
         <Typography.Text type="danger">User not found.</Typography.Text>
@@ -94,35 +86,38 @@ export default function EditUserPage() {
     );
   }
 
-  const canTransfer = target.role === "admin" && !target.isOwner && (viewer?.role === "super_admin" || viewer?.isOwner);
+  const canTransfer =
+    target?.role === "admin" && !target?.isOwner && (viewer?.role === "super_admin" || viewer?.isOwner);
 
   return (
     <Card className="max-w-xl">
       <Title level={3}>
-        Edit User {target.isOwner && <Tag color="gold" icon={<CrownOutlined />}>Owner</Tag>}
+        Edit User {target?.isOwner && <Tag color="gold" icon={<CrownOutlined />}>Owner</Tag>}
       </Title>
-      <Form<FormValues> form={form} layout="vertical" onFinish={handleFinish}>
-        <Form.Item label="Full Name" name="fullName" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item label="Email" name="email" rules={[{ required: true, type: "email" }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item label="Role" name="role" rules={[{ required: true }]}>
-          <Select
-            options={[
-              { value: "admin", label: "Admin" },
-              { value: "agent", label: "Agent" },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="New Password" name="password" extra="Leave blank to keep the current password.">
-          <Input.Password />
-        </Form.Item>
-        <Button type="primary" htmlType="submit" loading={submitting}>
-          Save Changes
-        </Button>
-      </Form>
+      <Spin spinning={loading}>
+        <Form<FormValues> form={form} layout="vertical" onFinish={handleFinish}>
+          <Form.Item label="Full Name" name="fullName" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Email" name="email" rules={[{ required: true, type: "email" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Role" name="role" rules={[{ required: true }]}>
+            <Select
+              options={[
+                { value: "admin", label: "Admin" },
+                { value: "agent", label: "Agent" },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item label="New Password" name="password" extra="Leave blank to keep the current password.">
+            <Input.Password />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" loading={submitting}>
+            Save Changes
+          </Button>
+        </Form>
+      </Spin>
 
       {canTransfer && (
         <div className="mt-6 pt-6 border-t border-black/10">

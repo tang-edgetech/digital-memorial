@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { CurrentUser } from "@/lib/api/auth";
 import { hasPermission } from "@/lib/hooks/usePermission";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 const { Sider } = Layout;
 
@@ -31,8 +32,9 @@ function buildItems(user: CurrentUser | null) {
 
 export function Sidebar({ collapsed, user }: { collapsed: boolean; user: CurrentUser | null }) {
   const pathname = usePathname();
+  const { mode } = useTheme();
   return (
-    <Sider collapsible collapsed={collapsed} trigger={null} theme="light">
+    <Sider collapsible collapsed={collapsed} trigger={null} theme={mode}>
       <div className="h-16 flex items-center justify-center font-semibold text-lg overflow-hidden whitespace-nowrap">
         {collapsed ? "DM" : "Digital Memorial"}
       </div>

@@ -82,18 +82,11 @@ export default function SiteSettingsPage() {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <Spin />
-      </div>
-    );
-  }
-
   return (
     <Card>
       <Title level={3}>Site Settings</Title>
-      <Form form={form} layout="vertical" onFinish={handleFinish} className="max-w-2xl">
+      <Spin spinning={loading}>
+        <Form form={form} layout="vertical" onFinish={handleFinish} className="max-w-2xl">
         <Tabs
           items={[
             {
@@ -257,7 +250,8 @@ export default function SiteSettingsPage() {
         <Button type="primary" htmlType="submit" loading={saving}>
           Save Settings
         </Button>
-      </Form>
+        </Form>
+      </Spin>
     </Card>
   );
 }

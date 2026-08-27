@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout } from "antd";
+import { Layout, theme as antdTheme } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { IconButtonWithTooltip } from "@/components/feedback/IconButtonWithTooltip";
@@ -21,6 +21,7 @@ export function Topbar({ collapsed, onToggle, userLabel }: TopbarProps) {
   const confirmAction = useConfirm();
   const toast = useToast();
   const router = useRouter();
+  const { token } = antdTheme.useToken();
 
   const handleLogout = () => {
     confirmAction({
@@ -39,7 +40,10 @@ export function Topbar({ collapsed, onToggle, userLabel }: TopbarProps) {
   };
 
   return (
-    <Header className="flex items-center justify-between px-4 bg-[var(--background)] border-b border-black/10">
+    <Header
+      className="flex items-center justify-between px-4"
+      style={{ background: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}` }}
+    >
       <IconButtonWithTooltip
         label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         type="text"

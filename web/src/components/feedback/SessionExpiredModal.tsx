@@ -37,7 +37,7 @@ export function SessionExpiredModal() {
       okText="Back to login"
       cancelButtonProps={{ style: { display: "none" } }}
       closable={false}
-      maskClosable={false}
+      mask={{ closable: false }}
     >
       <p>You&apos;ve been logged out due to inactivity. Please log in again to continue.</p>
     </Modal>
